@@ -29,10 +29,10 @@ html,body{height:100%;overscroll-behavior:none}
 body{font-family:var(--font-body);background:var(--petal);color:var(--text);min-height:100vh;padding-bottom:72px;font-size:var(--font-size-base);-webkit-font-smoothing:antialiased}
 
 /* ─── HEADER ─── */
-header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding:env(safe-area-inset-top,0px) 16px 14px;padding-top:calc(env(safe-area-inset-top,0px) + 18px);position:sticky;top:0;z-index:50;box-shadow:0 3px 14px rgba(0,0,0,.13)}
+header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding:env(safe-area-inset-top,0px) 16px 8px;padding-top:calc(env(safe-area-inset-top,0px) + 10px);position:sticky;top:0;z-index:50;box-shadow:0 3px 14px rgba(0,0,0,.13)}
 .hdr-row{display:flex;align-items:center;justify-content:space-between}
-.hdr-title{font-family:var(--font-display);font-size:1.45rem;font-weight:600;letter-spacing:.02em}
-.hdr-sub{font-size:.68rem;opacity:.78;margin-top:1px}
+.hdr-title{font-family:var(--font-display);font-size:1.22rem;font-weight:600;letter-spacing:.02em}
+.hdr-sub{font-size:.64rem;opacity:.78;margin-top:0}
 .hdr-btns{display:flex;gap:7px}
 .hbtn{background:rgba(255,255,255,.18);border:none;color:#fff;width:34px;height:34px;border-radius:50%;font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}
 .hbtn:active{background:rgba(255,255,255,.32)}
@@ -56,19 +56,19 @@ header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
 /* ─── WALLET CARD ─── */
-.wallet-card{margin:12px 12px 0;border-radius:22px;background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding:18px 18px 14px;position:relative;overflow:hidden;box-shadow:0 8px 28px rgba(122,53,88,.28)}
+.wallet-card{margin:8px 12px 0;border-radius:20px;background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding:13px 16px 11px;position:relative;overflow:hidden;box-shadow:0 8px 28px rgba(122,53,88,.28)}
 .wallet-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,.08);border-radius:50%}
 .wallet-card::after{content:'';position:absolute;bottom:-20px;left:20px;width:80px;height:80px;background:rgba(255,255,255,.05);border-radius:50%}
-.wallet-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;opacity:.75;font-weight:700}
-.wallet-balance{font-family:var(--font-display);font-size:2rem;font-weight:600;margin:4px 0 2px;letter-spacing:.01em}
-.wallet-row{display:flex;gap:12px;margin-top:10px}
-.wallet-mini{flex:1;background:rgba(255,255,255,.13);border-radius:12px;padding:8px 10px}
-.wallet-mini-lbl{font-size:.58rem;opacity:.8;text-transform:uppercase;letter-spacing:.07em;font-weight:600}
-.wallet-mini-val{font-family:var(--font-display);font-size:1.05rem;font-weight:600;margin-top:2px}
+.wallet-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;opacity:.75;font-weight:700}
+.wallet-balance{font-family:var(--font-display);font-size:1.62rem;font-weight:600;margin:2px 0 0;letter-spacing:.01em}
+.wallet-row{display:flex;gap:10px;margin-top:7px}
+.wallet-mini{flex:1;background:rgba(255,255,255,.13);border-radius:11px;padding:6px 9px}
+.wallet-mini-lbl{font-size:.56rem;opacity:.8;text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.wallet-mini-val{font-family:var(--font-display);font-size:.95rem;font-weight:600;margin-top:1px}
 .wallet-mini-val.income{color:#a8f0c6}
 .wallet-mini-val.outcome{color:#ffb3c1}
-.wallet-actions{display:flex;gap:6px;margin-top:10px}
-.wallet-btn{flex:1;background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:10px;padding:8px 6px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:var(--font-body)}
+.wallet-actions{display:flex;gap:6px;margin-top:7px}
+.wallet-btn{flex:1;background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:10px;padding:7px 6px;font-size:.7rem;font-weight:600;cursor:pointer;font-family:var(--font-body)}
 .wallet-btn:active{background:rgba(255,255,255,.3)}
 
 /* ─── SECTION CARD ─── */
@@ -113,7 +113,7 @@ header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding
 .sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
 .sw{border-radius:13px;padding:11px 12px}
 .sw-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700}
-.sw-val{font-family:var(--font-display);font-size:1.28rem;font-weight:600;margin-top:2px}
+.sw-val{font-family:var(--font-body);font-size:1.28rem;font-weight:600;margin-top:2px}
 .sw-sub{font-size:.65rem;color:var(--muted);margin-top:1px}
 .sw-full{grid-column:1/-1;background:var(--blush)}.sw-full .sw-val{color:var(--deep)}
 .sw-g{background:var(--gbg)}.sw-g .sw-val{color:var(--green)}
@@ -205,6 +205,10 @@ header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding
 .hi:last-child{border-bottom:none}
 .hi-m{color:var(--muted)}.hi-a{color:var(--green);font-family:var(--font-display);font-weight:600}
 .hi-x{background:none;border:none;color:rgba(208,80,96,.4);cursor:pointer;font-size:.83rem;padding:0 3px}
+
+/* ─── FAB ─── */
+.fab{position:fixed;right:16px;bottom:calc(64px + env(safe-area-inset-bottom,0px) + 12px);width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;border:none;font-size:1.6rem;line-height:1;box-shadow:0 8px 22px rgba(122,53,88,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:95}
+.fab:active{transform:scale(.92)}
 
 /* ─── MODALS ─── */
 .mbd{display:none;position:fixed;inset:0;background:rgba(61,32,48,.43);backdrop-filter:blur(5px);z-index:200;align-items:flex-end;justify-content:center}
@@ -552,6 +556,31 @@ header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding
     </div>
     <div class="sec-body" id="sec-body-done"><div id="doneList"></div>
       <button class="sec-add" style="color:var(--red)" onclick="clearDone()">🗑 Clear all completed</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ FLOATING ADD BUTTON ══════════ -->
+<button class="fab" id="fabBtn" onclick="handleFab()" aria-label="Quick add">＋</button>
+
+<!-- ══════════ QUICK ADD SHEET (used by FAB on Home/Grocery) ══════════ -->
+<div class="mbd" id="fabSheetModal" onclick="closeMIf(event,'fabSheetModal')">
+  <div class="mbox">
+    <div class="mhandle"></div>
+    <div class="mtitle" id="fabSheetTitle">Quick Add</div>
+    <div class="fg" id="fabSheetOptions"></div>
+  </div>
+</div>
+
+<!-- ══════════ PANTRY MOVE CONFIRM ══════════ -->
+<div class="mbd" id="pantryConfirmModal" onclick="closeMIf(event,'pantryConfirmModal')">
+  <div class="mbox">
+    <div class="mhandle"></div>
+    <div class="mtitle">📦 Move to Pantry?</div>
+    <div style="font-size:.85rem;color:var(--text);line-height:1.5;margin-bottom:4px" id="pantryConfirmText"></div>
+    <div class="mact">
+      <button class="mbtn mbtn-o" onclick="cancelPantryMove()">Not now</button>
+      <button class="mbtn mbtn-p" onclick="confirmPantryMove()">Add to Pantry 🌸</button>
     </div>
   </div>
 </div>
@@ -1170,7 +1199,38 @@ function renderGrocery(){
   html+=`<div class="groc-total-row"><span class="groc-total-lbl">Week Total</span><span class="groc-total-val">${fmt(total)}</span></div>`;
   el.innerHTML=html;
 }
-function togGroc(i,el){ grocery[i].got=el.checked; sv('ft_groc',grocery); renderGrocery(); renderSummary(); }
+let pendingPantryItem=null;
+function togGroc(i,el){
+  const g=grocery[i];
+  const wasGot=g.got;
+  g.got=el.checked;
+  sv('ft_groc',grocery);
+  renderGrocery(); renderSummary();
+  if(el.checked && !wasGot){
+    pendingPantryItem=g;
+    document.getElementById('pantryConfirmText').textContent=`Add "${g.name}" (×${g.qty||1}) to your Pantry Inventory stock?`;
+    document.getElementById('pantryConfirmModal').classList.add('open');
+  }
+}
+function confirmPantryMove(){
+  if(pendingPantryItem) moveGrocToPantry(pendingPantryItem);
+  pendingPantryItem=null;
+  closeM('pantryConfirmModal');
+}
+function cancelPantryMove(){
+  pendingPantryItem=null;
+  closeM('pantryConfirmModal');
+}
+function moveGrocToPantry(g){
+  const idx=inventory.findIndex(it=>it.name.trim().toLowerCase()===g.name.trim().toLowerCase());
+  if(idx>-1){
+    inventory[idx].qty=Number(inventory[idx].qty||0)+Number(g.qty||1);
+  } else {
+    inventory.push({name:g.name,qty:Number(g.qty||1),min:0});
+  }
+  sv('ft_inv',inventory);
+  renderInventory();
+}
 function delGroc(i){ grocery.splice(i,1); sv('ft_groc',grocery); renderGrocery(); renderSummary(); }
 function quickAddGroc(){
   const name=document.getElementById('gName').value.trim();
@@ -1396,6 +1456,53 @@ function saveItem(){
 // ════════ MODAL HELPERS ════════
 function closeM(id){ document.getElementById(id).classList.remove('open'); }
 function closeMIf(e,id){ if(e.target===document.getElementById(id)) closeM(id); }
+
+// ════════ FLOATING ADD BUTTON ════════
+function currentTab(){
+  const p=document.querySelector('.page.active');
+  return p?p.id.replace('page-',''):'home';
+}
+function openFabSheet(title,optionsHtml){
+  document.getElementById('fabSheetTitle').textContent=title;
+  document.getElementById('fabSheetOptions').innerHTML=optionsHtml;
+  document.getElementById('fabSheetModal').classList.add('open');
+}
+function handleFab(){
+  const tab=currentTab();
+  if(tab==='home'){
+    openFabSheet('Quick Add',`
+      <button class="mbtn mbtn-p" style="width:100%" onclick="fabAddIncome()">＋ Add Income</button>
+      <button class="mbtn mbtn-o" style="width:100%" onclick="fabAddExpense()">－ Add Expense</button>`);
+  } else if(tab==='debts'){
+    openModal('debt');
+  } else if(tab==='bills'){
+    openModal('bill');
+  } else if(tab==='grocery'){
+    openFabSheet('Quick Add',`
+      <button class="mbtn mbtn-p" style="width:100%" onclick="fabAddGroc()">🛒 Add Grocery Item</button>
+      <button class="mbtn mbtn-o" style="width:100%" onclick="fabAddInv()">📦 Add Pantry Item</button>`);
+  } else if(tab==='todo'){
+    focusQuickAdd('todo');
+  }
+}
+function fabAddIncome(){ closeM('fabSheetModal'); openWalletModal('income'); }
+function fabAddExpense(){ closeM('fabSheetModal'); openWalletModal('expense'); }
+function fabAddGroc(){ closeM('fabSheetModal'); focusQuickAdd('groc'); }
+function fabAddInv(){ closeM('fabSheetModal'); focusQuickAdd('inv'); }
+
+// Scrolls to + expands + focuses the right quick-add input, no matter how long the list above it is.
+function focusQuickAdd(which){
+  const map={groc:{sec:'groc',input:'gName'},inv:{sec:'inv',input:'iName'},todo:{sec:'todo',input:'tdName'}};
+  const cfg=map[which];
+  if(!cfg) return;
+  const body=document.getElementById('sec-body-'+cfg.sec);
+  const chev=document.getElementById('chev-'+cfg.sec);
+  if(body && !body.classList.contains('open')){ body.classList.add('open'); if(chev)chev.classList.add('open'); }
+  const inputEl=document.getElementById(cfg.input);
+  if(inputEl){
+    setTimeout(()=>{ inputEl.scrollIntoView({behavior:'smooth',block:'center'}); inputEl.focus(); },90);
+  }
+}
 
 // ════════ THEMES ════════
 const THEMES={
