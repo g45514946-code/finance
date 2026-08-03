@@ -46,9 +46,12 @@ header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding
 
 /* ─── TAB BAR ─── */
 .tab-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;border-top:1px solid rgba(180,100,130,.15);z-index:90;box-shadow:0 -4px 20px rgba(120,50,80,.07);padding-bottom:env(safe-area-inset-bottom,0px)}
-.tab-btn{flex:1;padding:9px 2px 10px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);font-family:var(--font-body);font-size:.58rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;transition:color .15s}
-.tab-btn .ti{font-size:1.2rem;line-height:1}
+.tab-btn{flex:1;padding:10px 2px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;color:var(--muted);font-family:var(--font-body);transition:color .15s}
+.tab-btn .ti{font-size:1.28rem;line-height:1;padding:3px 13px;border-radius:12px;transition:background .18s ease,transform .18s ease}
+.tab-btn .tl{font-size:.56rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;max-height:0;opacity:0;overflow:hidden;margin-top:0;transition:max-height .18s ease,opacity .15s ease,margin-top .18s ease}
 .tab-btn.active{color:var(--deep)}
+.tab-btn.active .ti{background:var(--blush);transform:translateY(-1px)}
+.tab-btn.active .tl{max-height:14px;opacity:1;margin-top:3px}
 
 /* ─── PAGES ─── */
 .page{display:none;animation:fadeIn .2s ease}
@@ -119,6 +122,7 @@ header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding
 .sw-g{background:var(--gbg)}.sw-g .sw-val{color:var(--green)}
 .sw-r{background:var(--rbg)}.sw-r .sw-val{color:var(--red)}
 .sw-y{background:var(--ybg)}.sw-y .sw-val{color:var(--yellow)}
+.sw-p{background:rgba(192,112,144,.12)}.sw-p .sw-val{color:var(--mauve)}
 .prog-row{display:flex;align-items:center;gap:9px}
 .prog-lbl{font-size:.7rem;color:var(--muted);min-width:0;white-space:nowrap}
 .prog-outer{flex:1;height:7px;background:rgba(180,100,130,.12);border-radius:99px;overflow:hidden}
@@ -474,6 +478,23 @@ header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding
   </div>
 </div>
 
+<!-- ══════════ SAVINGS ══════════ -->
+<div class="page" id="page-savings">
+  <div class="sec" style="margin-top:12px">
+    <div class="sec-hdr" onclick="toggleSec('savings')">
+      <div class="sec-hdr-left">
+        <div class="sec-icon" style="background:#f3e8fc">🐷</div>
+        <div><div class="sec-title">Savings Goals</div><div class="sec-meta" id="savings-meta">—</div></div>
+      </div>
+      <span class="chevron open" id="chev-savings">▾</span>
+    </div>
+    <div class="sec-body open" id="sec-body-savings">
+      <div id="savingsList"></div>
+      <button class="sec-add" onclick="openModal('savings')">＋ Add savings goal</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════ GROCERY ══════════ -->
 <div class="page" id="page-grocery">
   <div class="sec" style="margin-top:12px">
@@ -600,11 +621,12 @@ header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding
 
 <!-- ══════════ TAB BAR ══════════ -->
 <div class="tab-bar">
-  <button class="tab-btn active" onclick="goTab('home',this)"><span class="ti">🏠</span>Home</button>
-  <button class="tab-btn" onclick="goTab('debts',this)"><span class="ti">💳</span>Debts</button>
-  <button class="tab-btn" onclick="goTab('bills',this)"><span class="ti">🧾</span>Bills</button>
-  <button class="tab-btn" onclick="goTab('grocery',this)"><span class="ti">🛒</span>Grocery</button>
-  <button class="tab-btn" onclick="goTab('todo',this)"><span class="ti">✅</span>To-Do</button>
+  <button class="tab-btn active" onclick="goTab('home',this)"><span class="ti">🏠</span><span class="tl">Home</span></button>
+  <button class="tab-btn" onclick="goTab('debts',this)"><span class="ti">💳</span><span class="tl">Debts</span></button>
+  <button class="tab-btn" onclick="goTab('bills',this)"><span class="ti">🧾</span><span class="tl">Bills</span></button>
+  <button class="tab-btn" onclick="goTab('savings',this)"><span class="ti">🐷</span><span class="tl">Savings</span></button>
+  <button class="tab-btn" onclick="goTab('grocery',this)"><span class="ti">🛒</span><span class="tl">Grocery</span></button>
+  <button class="tab-btn" onclick="goTab('todo',this)"><span class="ti">✅</span><span class="tl">To-Do</span></button>
 </div>
 
 <!-- ══════════ ADD/EDIT MODAL ══════════ -->
@@ -633,6 +655,23 @@ header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding
     <div class="mact">
       <button class="mbtn mbtn-o" onclick="closeM('payModal')">Cancel</button>
       <button class="mbtn mbtn-p" onclick="confirmPay()">Confirm ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SAVINGS DEPOSIT/WITHDRAW MODAL ══════════ -->
+<div class="mbd" id="savingsTxModal" onclick="closeMIf(event,'savingsTxModal')">
+  <div class="mbox">
+    <div class="mhandle"></div>
+    <div class="mtitle" id="savingsTxTitle">Add Deposit</div>
+    <div class="fg">
+      <div class="fl"><label>Amount (₱)</label><input type="number" id="stx-amt" min="0" placeholder="0.00"></div>
+      <div class="fl"><label>Date</label><input type="date" id="stx-date"></div>
+      <div class="fl"><label>Notes (optional)</label><input type="text" id="stx-note" placeholder="e.g. Bonus, sold stuff..."></div>
+    </div>
+    <div class="mact">
+      <button class="mbtn mbtn-o" onclick="closeM('savingsTxModal')">Cancel</button>
+      <button class="mbtn mbtn-p" onclick="confirmSavingsTx()">Confirm ✓</button>
     </div>
   </div>
 </div>
@@ -779,10 +818,12 @@ let grocery = parse('ft_groc',  []);
 let todos   = parse('ft_todos', []);
 let inventory = parse('ft_inv', []);
 let wallet  = parse('ft_wallet', []);
+let savings = parse('ft_savings', []);
 
 let calY = CY, calM = CM, calSel = null;
 let modalType = null, modalEditIdx = null;
 let payTarget = null;
+let savingsTxTarget = null;
 let todoFilter = 'all';
 let walletModalType = 'income';
 let activeWeek = getWeekKey(NOW);
@@ -838,6 +879,7 @@ function toggleSec(id){
 function fmt(n){ return '₱'+Number(n||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function todayStr(){ return `${CY}-${String(CM+1).padStart(2,'0')}-${String(CD).padStart(2,'0')}`; }
 function fmtMonth(m){ if(!m)return'—'; const[y,mo]=m.split('-'); return `${MNAMES[parseInt(mo)-1]} ${y}`; }
+function fmtDate(ds){ if(!ds)return'—'; const[y,mo,d]=ds.split('-'); return `${MNAMES[parseInt(mo)-1].slice(0,3)} ${parseInt(d)}, ${y}`; }
 function ordinal(n){ const s=['th','st','nd','rd'],v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
 function daysDiff(ds){ if(!ds)return null; const d=new Date(ds),n=new Date(); n.setHours(0,0,0,0);d.setHours(0,0,0,0); return Math.round((d-n)/86400000); }
 function totalPaidDebt(d){ return (d.history||[]).reduce((s,h)=>s+Number(h.amount),0); }
@@ -1010,12 +1052,15 @@ function renderSummary(){
   const pct=grand>0?Math.min(100,grandPaid/grand*100).toFixed(0):0;
   const todoPending=todos.filter(t=>!t.done).length;
   const {income,expense,balance}=getWalletMonth();
+  const sTotal=savings.reduce((s,g)=>s+Number(g.target||0),0);
+  const sCurrent=savings.reduce((s,g)=>s+Number(g.current||0),0);
 
   document.getElementById('swGrid').innerHTML=`
     <div class="sw sw-full"><div class="sw-label">Wallet Balance — ${MNAMES[CM]}</div><div class="sw-val" style="color:${balance>=0?'var(--deep)':'var(--red)'}">${fmt(balance)}</div><div class="sw-sub">${fmt(income)} in · ${fmt(expense)} out</div></div>
     <div class="sw sw-g"><div class="sw-label">Bills Paid</div><div class="sw-val">${fmt(bPaid)}</div><div class="sw-sub">of ${fmt(bTotal)}</div></div>
     <div class="sw sw-r"><div class="sw-label">Debt Balance</div><div class="sw-val">${fmt(tdTotal-tdPaid)}</div><div class="sw-sub">${fmt(tdPaid)} paid</div></div>
     <div class="sw sw-y"><div class="sw-label">Grocery Spent</div><div class="sw-val">${fmt(gGot)}</div><div class="sw-sub">of ${fmt(gTotal)}</div></div>
+    <div class="sw sw-p"><div class="sw-label">Total Savings</div><div class="sw-val">${fmt(sCurrent)}</div><div class="sw-sub">${savings.length} goal${savings.length!==1?'s':''}${sTotal?' · of '+fmt(sTotal):''}</div></div>
     <div class="sw sw-full" style="background:rgba(180,100,130,.08)"><div class="sw-label">To-Do Pending</div><div class="sw-val" style="color:var(--deep)">${todoPending} task${todoPending!==1?'s':''}</div><div class="sw-sub">${todos.filter(t=>t.done).length} completed</div></div>
   `;
   document.getElementById('progBar').style.width=pct+'%';
@@ -1174,6 +1219,81 @@ function delBillHist(bi,hi){
 function delBill(i){
   showConfirm('Delete Bill?','This bill and its full payment history will be permanently deleted.',()=>{
     bills.splice(i,1); sv('ft_bills',bills); renderAll();
+  });
+}
+
+// ════════ SAVINGS GOALS ════════
+function renderSavings(){
+  const el=document.getElementById('savingsList');
+  const totalCurrent=savings.reduce((s,g)=>s+Number(g.current||0),0);
+  const totalTarget=savings.reduce((s,g)=>s+Number(g.target||0),0);
+  document.getElementById('savings-meta').textContent=savings.length?`${fmt(totalCurrent)} saved${totalTarget?' of '+fmt(totalTarget):''}`:'—';
+  if(!savings.length){ el.innerHTML='<div class="empty-hint">No savings goals yet 🐷</div>'; return; }
+  el.innerHTML=savings.map((g,i)=>{
+    const pct=g.target>0?Math.min(100,(g.current/g.target)*100).toFixed(0):0;
+    const diff=daysDiff(g.deadline);
+    let tag='';
+    if(g.target>0&&g.current>=g.target) tag=`<span class="itag itag-g">🎉 Goal reached</span>`;
+    else if(g.deadline&&diff!==null){ if(diff<0) tag=`<span class="itag itag-r">⚠️ Past deadline</span>`; else if(diff<=14) tag=`<span class="itag itag-y">${diff}d left</span>`; }
+    const hist=(g.history||[]).slice().reverse().map((h,hi)=>`
+      <div class="hi"><div><span class="hi-m">${h.type==='deposit'?'＋ Deposit':'－ Withdraw'}</span>${h.note?` · ${h.note}`:''} <span style="color:var(--muted);font-size:.68rem">${h.date||''}</span></div>
+      <div style="display:flex;align-items:center;gap:5px"><span class="hi-a">${fmt(h.amount)}</span><button class="hi-x" onclick="delSavingsHist(${i},${(g.history||[]).length-1-hi})">✕</button></div></div>`).join('');
+    return `<div class="item-row" style="flex-wrap:wrap;padding:10px 0">
+      <div class="item-info">
+        <div class="item-name">${g.name}</div>
+        <div class="item-sub">${g.deadline?`Target: ${fmtDate(g.deadline)}`:'No target date'}</div>
+        ${tag}
+      </div>
+      <div style="text-align:right"><div class="item-amt">${fmt(g.current)}</div><div style="font-size:.65rem;color:var(--muted)">of ${fmt(g.target)}</div></div>
+      <div style="width:100%;padding:6px 32px 0">
+        <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted);margin-bottom:3px"><span>${pct}% funded</span></div>
+        <div class="prog-outer"><div class="prog-inner" style="width:${pct}%"></div></div>
+        ${g.notes?`<div style="font-size:.68rem;color:var(--muted);margin-top:3px">📝 ${g.notes}</div>`:''}
+      </div>
+      <div style="width:100%;padding:6px 32px 0;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <button class="ra-btn" style="background:var(--gbg);color:var(--green);border-radius:8px;padding:5px 10px;font-weight:600;font-size:.72rem" onclick="openSavingsTx(${i},'deposit')">＋ Deposit</button>
+        <button class="ra-btn" style="background:var(--rbg);color:var(--red);border-radius:8px;padding:5px 10px;font-weight:600;font-size:.72rem" onclick="openSavingsTx(${i},'withdraw')">－ Withdraw</button>
+        <button class="hist-toggle" onclick="toggleHist('sh${i}')">📋 History (${(g.history||[]).length}) <span id="harr-sh${i}">▾</span></button>
+        <button class="ra-btn" style="margin-left:auto" onclick="openModal('savings',${i})">✏️</button>
+        <button class="ra-btn" onclick="delSavings(${i})">🗑️</button>
+      </div>
+      <div class="hist-panel" id="hist-sh${i}" style="width:100%;padding:0 32px">${hist||'<div class="empty-hint" style="font-size:.73rem">No deposits yet.</div>'}</div>
+    </div>`;
+  }).join('');
+}
+function openSavingsTx(i,mode){
+  savingsTxTarget={idx:i,mode};
+  document.getElementById('savingsTxTitle').textContent=mode==='deposit'?`＋ Deposit to ${savings[i].name}`:`－ Withdraw from ${savings[i].name}`;
+  document.getElementById('stx-amt').value='';
+  document.getElementById('stx-date').value=todayStr();
+  document.getElementById('stx-note').value='';
+  document.getElementById('savingsTxModal').classList.add('open');
+}
+function confirmSavingsTx(){
+  const amount=parseFloat(document.getElementById('stx-amt').value)||0;
+  const date=document.getElementById('stx-date').value;
+  const note=document.getElementById('stx-note').value.trim();
+  if(!amount){ alert('Enter amount 🌸'); return; }
+  const {idx,mode}=savingsTxTarget;
+  const g=savings[idx];
+  if(!g.history) g.history=[];
+  if(mode==='withdraw'&&amount>Number(g.current||0)){
+    alert("You can't withdraw more than what's saved 🌸");
+    return;
+  }
+  g.current=Number(g.current||0)+(mode==='deposit'?amount:-amount);
+  g.history.push({type:mode,amount,date,note});
+  sv('ft_savings',savings);
+  closeM('savingsTxModal'); renderAll();
+}
+function delSavingsHist(gi,hi){
+  showConfirm('Remove Entry?','This deposit/withdrawal record will be deleted (goal amount stays the same — edit the goal directly if you need to correct the total).',()=>{
+    savings[gi].history.splice(hi,1); sv('ft_savings',savings); renderAll();
+  });
+}
+function delSavings(i){
+  showConfirm('Delete Savings Goal?','This goal and its full deposit history will be permanently deleted.',()=>{
+    savings.splice(i,1); sv('ft_savings',savings); renderAll();
   });
 }
 
@@ -1462,7 +1582,8 @@ const BILL_FIELDS=`
     <div class="fl"><label>Category</label><select id="mf-billcat"><option>Utilities</option><option>Internet / WiFi</option><option>Phone / Load</option><option>Rent</option><option>Insurance</option><option>Subscription</option><option>Transportation</option><option>Other</option></select></div>
     <div class="fl"><label>Amount (₱)</label><input type="number" id="mf-amount" min="0" placeholder="0.00"></div>
   </div>
-  <div class="fl"><label>Due Day of Month</label><input type="number" id="mf-dueDay" min="1" max="31" placeholder="e.g. 5"></div>
+  <div class="fl"><label>Due Date</label><input type="date" id="mf-billDueDate"></div>
+  <div class="fl"><small style="color:var(--muted);font-size:.7rem">Bills repeat monthly, on the same day-of-month as the date you pick.</small></div>
   <div class="fl"><label>Notes</label><input type="text" id="mf-notes" placeholder="Optional..."></div>`;
 
 const TODO_FIELDS=`
@@ -1473,13 +1594,22 @@ const TODO_FIELDS=`
   </div>
   <div class="fl"><label>Notes</label><textarea id="mf-notes" placeholder="Details, reminders..."></textarea></div>`;
 
+const SAVINGS_FIELDS=`
+  <div class="fl"><label>Goal Name</label><input type="text" id="mf-name" placeholder="e.g. Emergency Fund, New Phone..."></div>
+  <div class="fr">
+    <div class="fl"><label>Target Amount (₱)</label><input type="number" id="mf-target" min="0" placeholder="0.00"></div>
+    <div class="fl"><label>Current Amount (₱)</label><input type="number" id="mf-current" min="0" placeholder="0.00"></div>
+  </div>
+  <div class="fl"><label>Target Date (optional)</label><input type="date" id="mf-deadline"></div>
+  <div class="fl"><label>Notes</label><input type="text" id="mf-notes" placeholder="Optional..."></div>`;
+
 function openModal(type,editIdx=null){
   modalType=type; modalEditIdx=editIdx;
-  const titles={debt:editIdx!==null?'✏️ Edit Debt':'💳 Add Debt',bill:editIdx!==null?'✏️ Edit Bill':'🧾 Add Bill',todo:editIdx!==null?'✏️ Edit Task':'📌 Add Task'};
+  const titles={debt:editIdx!==null?'✏️ Edit Debt':'💳 Add Debt',bill:editIdx!==null?'✏️ Edit Bill':'🧾 Add Bill',todo:editIdx!==null?'✏️ Edit Task':'📌 Add Task',savings:editIdx!==null?'✏️ Edit Goal':'🐷 Add Savings Goal'};
   document.getElementById('modalTitle').textContent=titles[type];
-  document.getElementById('modalFields').innerHTML=type==='debt'?DEBT_FIELDS:type==='bill'?BILL_FIELDS:TODO_FIELDS;
+  document.getElementById('modalFields').innerHTML=type==='debt'?DEBT_FIELDS:type==='bill'?BILL_FIELDS:type==='savings'?SAVINGS_FIELDS:TODO_FIELDS;
   if(editIdx!==null){
-    const src=type==='debt'?debts:type==='bill'?bills:todos;
+    const src=type==='debt'?debts:type==='bill'?bills:type==='savings'?savings:todos;
     const d=src[editIdx];
     document.getElementById('mf-name').value=d.name||'';
     if(type==='debt'){
@@ -1494,7 +1624,13 @@ function openModal(type,editIdx=null){
     } else if(type==='bill'){
       document.getElementById('mf-billcat').value=d.category||'Utilities';
       document.getElementById('mf-amount').value=d.amount||'';
-      document.getElementById('mf-dueDay').value=d.dueDay||'';
+      // Prefer the exact date if saved; fall back to reconstructing one from an old day-only bill for editing convenience.
+      document.getElementById('mf-billDueDate').value=d.dueDate||(d.dueDay?`${CMK}-${String(d.dueDay).padStart(2,'0')}`:'');
+      document.getElementById('mf-notes').value=d.notes||'';
+    } else if(type==='savings'){
+      document.getElementById('mf-target').value=d.target||'';
+      document.getElementById('mf-current').value=d.current||0;
+      document.getElementById('mf-deadline').value=d.deadline||'';
       document.getElementById('mf-notes').value=d.notes||'';
     } else {
       document.getElementById('mf-priority').value=d.priority||'med';
@@ -1513,9 +1649,15 @@ function saveItem(){
     if(modalEditIdx!==null)debts[modalEditIdx]=e;else debts.push(e);
     sv('ft_debts',debts);
   } else if(modalType==='bill'){
-    const e={name,category:document.getElementById('mf-billcat').value,amount:parseFloat(document.getElementById('mf-amount').value)||0,dueDay:parseInt(document.getElementById('mf-dueDay').value)||null,notes:document.getElementById('mf-notes').value.trim(),history:modalEditIdx!==null?(bills[modalEditIdx].history||[]):[]};
+    const dueDateVal=document.getElementById('mf-billDueDate').value;
+    const dueDay=dueDateVal?parseInt(dueDateVal.split('-')[2],10):null;
+    const e={name,category:document.getElementById('mf-billcat').value,amount:parseFloat(document.getElementById('mf-amount').value)||0,dueDate:dueDateVal||null,dueDay,notes:document.getElementById('mf-notes').value.trim(),history:modalEditIdx!==null?(bills[modalEditIdx].history||[]):[]};
     if(modalEditIdx!==null)bills[modalEditIdx]=e;else bills.push(e);
     sv('ft_bills',bills);
+  } else if(modalType==='savings'){
+    const e={name,target:parseFloat(document.getElementById('mf-target').value)||0,current:parseFloat(document.getElementById('mf-current').value)||0,deadline:document.getElementById('mf-deadline').value,notes:document.getElementById('mf-notes').value.trim(),history:modalEditIdx!==null?(savings[modalEditIdx].history||[]):[]};
+    if(modalEditIdx!==null)savings[modalEditIdx]=e;else savings.push(e);
+    sv('ft_savings',savings);
   } else {
     const e={name,priority:document.getElementById('mf-priority').value,dueDate:document.getElementById('mf-dueDate').value,notes:document.getElementById('mf-notes').value.trim(),done:modalEditIdx!==null?(todos[modalEditIdx].done||false):false};
     if(modalEditIdx!==null)todos[modalEditIdx]=e;else todos.push(e);
@@ -1548,6 +1690,8 @@ function handleFab(){
     openModal('debt');
   } else if(tab==='bills'){
     openModal('bill');
+  } else if(tab==='savings'){
+    openModal('savings');
   } else if(tab==='grocery'){
     openFabSheet('Quick Add',`
       <button class="mbtn mbtn-p" style="width:100%" onclick="fabAddGroc()">🛒 Add Grocery Item</button>
@@ -1632,147 +1776,4 @@ function openCust(){
 }
 document.getElementById('emojiRow').querySelectorAll('.epick').forEach(e=>{
   e.onclick=()=>{
-    document.querySelectorAll('.epick').forEach(x=>x.classList.remove('active')); e.classList.add('active');
-    const cur=document.getElementById('appTitle').textContent.trim().split(' '); cur[0]=e.dataset.e;
-    const t=cur.join(' '); document.getElementById('appTitle').textContent=t;
-    document.getElementById('cust-title').value=t; lsSet('ft_title',t);
-  };
-});
-
-// ════════ RENDER ALL ════════
-function renderAll(){
-  buildCal(); renderSummary(); renderToday();
-  renderDebts(); renderBills(); renderGrocery(); renderTodos(); renderInventory();
-}
-
-// ════════ PWA INSTALL ════════
-let deferredPrompt=null;
-
-const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-const isInStandaloneMode=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
-
-function showInstallOverlay(){
-  if(isInStandaloneMode) return; // already installed
-  if(localStorage.getItem('ft_install_dismissed')) return;
-  const overlay=document.getElementById('installOverlay');
-  overlay.classList.add('show');
-  if(isIOS){
-    document.getElementById('androidSteps').style.display='none';
-    document.getElementById('iosSteps').style.display='flex';
-    document.getElementById('iosNote').style.display='block';
-    document.getElementById('installMainBtn').textContent='Got it! I\'ll use Safari Share ↑';
-    document.getElementById('installMainBtn').onclick=dismissInstall;
-  }
-}
-
-function dismissInstall(){
-  document.getElementById('installOverlay').classList.remove('show');
-  localStorage.setItem('ft_install_dismissed','1');
-}
-
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault();
-  deferredPrompt=e;
-  document.getElementById('installBtn').style.display='flex';
-  document.getElementById('installBanner').classList.add('show');
-  // Show overlay if not dismissed
-  if(!localStorage.getItem('ft_install_dismissed')) showInstallOverlay();
-});
-
-function installApp(){
-  if(isIOS){ dismissInstall(); return; }
-  if(!deferredPrompt){ showInstallOverlay(); return; }
-  deferredPrompt.prompt();
-  deferredPrompt.userChoice.then(r=>{
-    deferredPrompt=null;
-    document.getElementById('installBtn').style.display='none';
-    document.getElementById('installBanner').classList.remove('show');
-    document.getElementById('installOverlay').classList.remove('show');
-  });
-}
-
-window.addEventListener('appinstalled',()=>{
-  document.getElementById('installBanner').classList.remove('show');
-  document.getElementById('installBtn').style.display='none';
-  document.getElementById('installOverlay').classList.remove('show');
-  localStorage.setItem('ft_install_dismissed','1');
-});
-
-// Show overlay on first visit after a short delay
-setTimeout(()=>{
-  if(!isInStandaloneMode&&!localStorage.getItem('ft_install_dismissed')){
-    if(isIOS) showInstallOverlay();
-    // Android: only show when beforeinstallprompt fires
-  }
-}, 1500);
-
-// ════════ SERVICE WORKER ════════
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{ navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
-}
-
-// ════════ INIT ════════
-(function init(){
-  const t=localStorage.getItem('ft_theme');
-  if(t&&THEMES[t]){ setThemeVars(THEMES[t]); const btn=document.querySelector(`[data-t="${t}"]`); if(btn) btn.classList.add('active'); }
-  else { const btn=document.querySelector('[data-t="rose"]'); if(btn) btn.classList.add('active'); }
-
-  const savedFont=localStorage.getItem('ft_font');
-  if(savedFont){
-    document.documentElement.style.setProperty('--font-body',savedFont);
-    document.body.style.fontFamily=savedFont;
-    document.querySelectorAll('.font-option').forEach(o=>{
-      o.classList.toggle('active',o.dataset.font===savedFont);
-    });
-  }
-  const savedSize=localStorage.getItem('ft_fontsize');
-  if(savedSize){
-    document.documentElement.style.setProperty('--font-size-base',savedSize+'px');
-    document.body.style.fontSize=savedSize+'px';
-  }
-
-  const title=localStorage.getItem('ft_title')||'🌸 My Finance';
-  const sub=localStorage.getItem('ft_sub')||'Monthly tracker ✨';
-  document.getElementById('appTitle').textContent=title;
-  document.getElementById('appSub').textContent=sub;
-})();
-
-// ════════ SAMPLE DATA ════════
-if(!debts.length&&!bills.length&&!grocery.length&&!todos.length){
-  debts=[
-    {name:'Ana Reyes',type:'Borrowed Money',total:3000,monthly:500,dueDay:15,borrowed:'2025-03-01',due:'2026-09-01',interest:'',notes:'Pays every 15th',history:[{month:'2026-01',amount:500,date:'2026-01-15',note:'GCash'},{month:'2026-02',amount:500,date:'2026-02-15',note:''},{month:'2026-03',amount:500,date:'2026-03-14',note:'Cash'}]},
-    {name:'Ben Cruz',type:'Personal Loan',total:5000,monthly:1000,dueDay:10,borrowed:'2025-01-10',due:'2026-06-10',interest:'',notes:'',history:[{month:'2026-01',amount:1000,date:'2026-01-10',note:''},{month:'2026-02',amount:1000,date:'2026-02-10',note:''},{month:'2026-03',amount:1000,date:'2026-03-10',note:''}]},
-  ];
-  bills=[
-    {name:'Electricity',category:'Utilities',amount:850,dueDay:5,notes:'Meralco',history:[{month:'2026-03',amount:850,date:'2026-03-05',note:''}]},
-    {name:'WiFi',category:'Internet / WiFi',amount:1299,dueDay:1,notes:'PLDT Fibr',history:[{month:'2026-03',amount:1299,date:'2026-03-01',note:'Auto-pay'}]},
-    {name:'Phone Load',category:'Phone / Load',amount:149,dueDay:20,notes:'',history:[]},
-  ];
-  const thisWeek=getWeekKey(NOW);
-  grocery=[
-    {name:'Rice (5kg)',qty:1,price:280,cat:'Pantry',got:false,week:thisWeek},
-    {name:'Eggs (tray)',qty:1,price:200,cat:'Dairy',got:true,week:thisWeek},
-    {name:'Chicken breast',qty:1,price:180,cat:'Meat & Fish',got:false,week:thisWeek},
-    {name:'Vegetables',qty:1,price:150,cat:'Produce',got:false,week:thisWeek},
-  ];
-  inventory=[
-    {name:'Rice',qty:2,min:1},{name:'Cooking Oil',qty:1,min:1},{name:'Salt',qty:3,min:1},{name:'Sugar',qty:0,min:1},
-  ];
-  wallet=[
-    {kind:'income',desc:'Salary',amount:25000,date:`${CMK}-01`,cat:'Salary',id:1},
-    {kind:'expense',desc:'Grocery run',amount:1800,date:`${CMK}-03`,cat:'Grocery',id:2},
-  ];
-  todos=[
-    {name:'Pay electricity bill',priority:'high',dueDate:`${CMK}-05`,notes:'Meralco · ₱850',done:false},
-    {name:'Follow up Ana Reyes payment',priority:'med',dueDate:`${CMK}-15`,notes:'',done:false},
-    {name:'Buy groceries',priority:'med',dueDate:'',notes:'See grocery list',done:false},
-    {name:'Check GCash balance',priority:'low',dueDate:'',notes:'',done:true},
-  ];
-  sv('ft_debts',debts);sv('ft_bills',bills);sv('ft_groc',grocery);sv('ft_todos',todos);sv('ft_inv',inventory);sv('ft_wallet',wallet);
-}
-
-renderWeekTabs();
-renderAll();
-</script>
-</body>
-</html>
+    document.querySelectorAll('.epick').forEach(x=>x.classList.remove('active')); e.classL
