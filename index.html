@@ -572,6 +572,19 @@ header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding
   </div>
 </div>
 
+<!-- ══════════ GENERIC CONFIRM (used for all delete/clear actions) ══════════ -->
+<div class="mbd" id="genericConfirmModal" onclick="closeMIf(event,'genericConfirmModal')">
+  <div class="mbox">
+    <div class="mhandle"></div>
+    <div class="mtitle" id="genericConfirmTitle">Are you sure?</div>
+    <div style="font-size:.85rem;color:var(--text);line-height:1.5;margin-bottom:4px" id="genericConfirmText"></div>
+    <div class="mact">
+      <button class="mbtn mbtn-o" onclick="runGenericCancel()">Cancel</button>
+      <button class="mbtn mbtn-d" onclick="runGenericConfirm()">Delete</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════ PANTRY MOVE CONFIRM ══════════ -->
 <div class="mbd" id="pantryConfirmModal" onclick="closeMIf(event,'pantryConfirmModal')">
   <div class="mbox">
@@ -662,6 +675,7 @@ header{background:linear-gradient(135deg,var(--hf),var(--ht));color:#fff;padding
     <div class="mtitle">📋 Wallet History</div>
     <div id="walletHistList"></div>
     <div class="mact">
+      <button class="mbtn mbtn-d" onclick="clearAllWalletHistory()">🗑 Clear All</button>
       <button class="mbtn mbtn-p" onclick="closeM('walletHistModal')">Close</button>
     </div>
   </div>
@@ -909,12 +923,23 @@ function delWalletTx(i,e){
   const sorted=[...wallet].sort((a,b)=>b.date.localeCompare(a.date));
   const tx=sorted[i];
   const realIdx=wallet.findIndex(w=>w.id===tx.id);
-  if(realIdx!==-1&&confirm('Remove this transaction?')){
+  if(realIdx===-1) return;
+  showConfirm('Remove Transaction?','This entry will be permanently removed.',()=>{
     wallet.splice(realIdx,1);
     sv('ft_wallet',wallet);
     openWalletHistory();
     renderWallet();
-  }
+  });
+}
+function clearAllWalletHistory(){
+  if(!wallet.length){ closeM('walletHistModal'); return; }
+  showConfirm('Clear All History?','Every income and expense entry will be permanently deleted. This cannot be undone.',()=>{
+    wallet=[];
+    sv('ft_wallet',wallet);
+    closeM('walletHistModal');
+    renderWallet();
+    renderSummary();
+  });
 }
 
 // ════════ CALENDAR ════════
@@ -1080,8 +1105,16 @@ function handleDebtChk(i,el){
     el.checked=false;
   }
 }
-function delDebtHist(di,hi){ if(confirm('Remove?')){ debts[di].history.splice(hi,1); sv('ft_debts',debts); renderAll(); } }
-function delDebt(i){ if(confirm('Delete debt?')){ debts.splice(i,1); sv('ft_debts',debts); renderAll(); } }
+function delDebtHist(di,hi){
+  showConfirm('Remove Payment?','This payment record will be deleted.',()=>{
+    debts[di].history.splice(hi,1); sv('ft_debts',debts); renderAll();
+  });
+}
+function delDebt(i){
+  showConfirm('Delete Debt?','This debt and its full payment history will be permanently deleted.',()=>{
+    debts.splice(i,1); sv('ft_debts',debts); renderAll();
+  });
+}
 
 // ════════ BILLS ════════
 function renderBills(){
@@ -1127,14 +1160,22 @@ function handleBillChk(i,el){
     document.getElementById('payModal').classList.add('open');
     el.checked=false;
   } else {
-    if(confirm("Remove this month's payment?")){
+    showConfirm("Remove This Month's Payment?","This will unmark the bill as paid for this month.",()=>{
       bills[i].history=(bills[i].history||[]).filter(h=>h.month!==CMK);
       sv('ft_bills',bills); renderAll();
-    }
+    },()=>{ renderAll(); });
   }
 }
-function delBillHist(bi,hi){ if(confirm('Remove?')){ bills[bi].history.splice(hi,1); sv('ft_bills',bills); renderAll(); } }
-function delBill(i){ if(confirm('Delete bill?')){ bills.splice(i,1); sv('ft_bills',bills); renderAll(); } }
+function delBillHist(bi,hi){
+  showConfirm('Remove Payment?','This payment record will be deleted.',()=>{
+    bills[bi].history.splice(hi,1); sv('ft_bills',bills); renderAll();
+  });
+}
+function delBill(i){
+  showConfirm('Delete Bill?','This bill and its full payment history will be permanently deleted.',()=>{
+    bills.splice(i,1); sv('ft_bills',bills); renderAll();
+  });
+}
 
 // ════════ PAY CONFIRM ════════
 function confirmPay(){
@@ -1199,6 +1240,28 @@ function renderGrocery(){
   html+=`<div class="groc-total-row"><span class="groc-total-lbl">Week Total</span><span class="groc-total-val">${fmt(total)}</span></div>`;
   el.innerHTML=html;
 }
+// ════════ GENERIC CONFIRM (replaces native confirm() — unreliable in standalone/installed apps) ════════
+let pendingConfirmFn=null, pendingCancelFn=null;
+function showConfirm(title,text,onConfirm,onCancel=null){
+  pendingConfirmFn=onConfirm;
+  pendingCancelFn=onCancel;
+  document.getElementById('genericConfirmTitle').textContent=title;
+  document.getElementById('genericConfirmText').textContent=text;
+  document.getElementById('genericConfirmModal').classList.add('open');
+}
+function runGenericConfirm(){
+  const fn=pendingConfirmFn;
+  pendingConfirmFn=null; pendingCancelFn=null;
+  closeM('genericConfirmModal');
+  if(fn) fn();
+}
+function runGenericCancel(){
+  const fn=pendingCancelFn;
+  pendingConfirmFn=null; pendingCancelFn=null;
+  closeM('genericConfirmModal');
+  if(fn) fn();
+}
+
 let pendingPantryItem=null;
 function togGroc(i,el){
   const g=grocery[i];
@@ -1348,8 +1411,16 @@ function renderTodos(){
 
 function doneTodo(i,el){ todos[i].done=true; todos[i].doneAt=todayStr(); sv('ft_todos',todos); el.checked=false; renderTodos(); renderSummary(); }
 function undoTodo(i,el){ todos[i].done=false; delete todos[i].doneAt; sv('ft_todos',todos); el.checked=true; renderTodos(); renderSummary(); }
-function delTodo(i){ if(confirm('Delete task?')){ todos.splice(i,1); sv('ft_todos',todos); renderTodos(); renderSummary(); } }
-function clearDone(){ if(confirm('Clear all completed tasks?')){ todos=todos.filter(t=>!t.done); sv('ft_todos',todos); renderTodos(); renderSummary(); } }
+function delTodo(i){
+  showConfirm('Delete Task?','This task will be permanently removed.',()=>{
+    todos.splice(i,1); sv('ft_todos',todos); renderTodos(); renderSummary();
+  });
+}
+function clearDone(){
+  showConfirm('Clear All Completed?','All completed tasks will be permanently removed.',()=>{
+    todos=todos.filter(t=>!t.done); sv('ft_todos',todos); renderTodos(); renderSummary();
+  });
+}
 function quickAddTodo(){
   const name=document.getElementById('tdName').value.trim();
   if(!name) return;
